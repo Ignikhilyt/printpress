@@ -1,5 +1,5 @@
 # Multi-stage build for production
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 # Server build
 WORKDIR /app/server
@@ -16,7 +16,10 @@ COPY client/ ./
 RUN npm run build
 
 # Production image
-FROM node:18-alpine
+FROM node:18-slim
+
+# Install OpenSSL
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -38,3 +41,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
 
 # Start application
 CMD ["pm2-runtime", "server/server.js"]
+

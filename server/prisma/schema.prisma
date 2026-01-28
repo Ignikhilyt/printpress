@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  name             String
+  role             String    @default("ADMIN")
+  avatar           String?
+  phone            String?
+  isActive         Boolean   @default(true)
+  refreshToken     String?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  lastLoginAt      DateTime?
+  lastLoginIp      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@map("admins")
+}
+
+model Institute {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  logo        String?
+  website     String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  notes       Note[]
+
+  @@map("institutes")
+}
+
+model Note {
+  id            String      @id @default(uuid())
+  title         String
+  slug          String      @unique
+  description   String?
+  subject       String
+  category      String
+  pdfUrl        String
+  pdfFileName   String
+  pageCount     Int
+  pricePerPage  Float       @default(1.0)
+  thumbnail     String?
+  coverImage    String?
+  isActive      Boolean     @default(true)
+  isFeatured    Boolean     @default(false)
+  downloadCount Int         @default(0)
+  viewCount     Int         @default(0)
+  rating        Float       @default(4.5)
+  reviewCount   Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  instituteId   String
+  institute     Institute   @relation(fields: [instituteId], references: [id])
+  orderItems    OrderItem[]
+
+  @@map("notes")
+  @@index([category, pricePerPage])
+  @@index([instituteId, isActive])
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  orderNumber    String      @unique
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  addressLine1   String
+  addressLine2   String?
+  city           String
+  state          String
+  pincode        String
+  landmark       String?
+  subtotal       Float
+  deliveryCharge Float       @default(0)
+  discount       Float       @default(0)
+  totalAmount    Float
+  paperType      String      @default("GSM_70")
+  printType      String      @default("BLACK_WHITE")
+  bindingType    String      @default("SPIRAL")
+  status         String      @default("PENDING")
+  paymentStatus  String      @default("PENDING")
+  paymentMethod  String      @default("COD")
+  trackingNumber String?
+  courierName    String?
+  customerNotes  String?
+  adminNotes     String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  printedAt      DateTime?
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+  items          OrderItem[]
+
+  @@map("orders")
+  @@index([status, createdAt])
+}
+
+model OrderItem {
+  id           String   @id @default(uuid())
+  quantity     Int      @default(1)
+  pageCount    Int
+  pricePerPage Float
+  totalPrice   Float
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  noteId       String
+  note         Note     @relation(fields: [noteId], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@map("order_items")
+}

@@ -1,0 +1,48 @@
+{
+    "name": "PrintPress",
+    "short_name": "PrintPress",
+    "description": "Order printed educational notes with custom binding and delivery",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1e293b",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "education",
+        "shopping"
+    ],
+    "shortcuts": [
+        {
+            "name": "Browse Notes",
+            "short_name": "Notes",
+            "description": "Browse available notes",
+            "url": "/notes",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "My Cart",
+            "short_name": "Cart",
+            "description": "View shopping cart",
+            "url": "/order",
+            "icons": [
+                {
+                    "src": "/favicon.svg",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}
